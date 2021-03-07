@@ -82,7 +82,7 @@ version = args[2][14:-(len(args[2])-17)]
 android_version = version[2:]
 
 text = f'<b>Project Sakura {version}</b>\n\n' \
-       f'<b>Android:</b> {android_version}' \
+       f'<b>Android:</b> {android_version}\n' \
        f'<b>Device:</b> {device}\n' \
        f'<b>Build date:</b> {build_date}\n' \
        f'<b>Status:</b> {rom_status}\n' \
@@ -90,7 +90,10 @@ text = f'<b>Project Sakura {version}</b>\n\n' \
 
 
 def callback(current, total):
-    print(f'Uploading... [{current / 1000} MB / {total / 1000} MB]')
+    print('Uploading... [{:.2%}]'.format(current/total))
 
 
-client.send_file(chat, [args[1], args[3]], caption=text, parse_mode='HTML', progress_callback=callback)
+rom = client.upload_file(args[1], progress_callback=callback)
+md5 = client.upload_file(args[3], progress_callback=callback)
+
+client.send_file(chat, [rom, md5], caption=text, parse_mode='HTML', progress_callback=callback)
